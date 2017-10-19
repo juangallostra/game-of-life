@@ -5,7 +5,11 @@
 
 // definir la nueva matriz que voy a utilizar
 
-// matriz no, [2D array]
+int new_estate[102][102] = { 0 };
+
+int (*pointer)[102][102];
+
+
 
 // Function declaration
 
