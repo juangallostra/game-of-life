@@ -19,6 +19,14 @@ int new_state[ROW][COLUMN] = { { 0, 0, 0, 0, 0, 0},
 int *pnew_state;
 
 
+// Se necessita reservar la memoria con alloc
+// Si no se declaran estas variables de forma global
+// Al salir de la funcion "evolve" como no se ha reservado 
+// que corresponde a los valores de la array esta se alibera
+// de forma automatica y hace que los resultado obtenidos
+// no se parezcan ni en pintura a los reales
+int array[ROW][COLUMN];
+int * pointer;
 
 
 
@@ -32,11 +40,17 @@ int decision(int cont, int cell_state);
 
 int main(void)
 {
-	// Pointer to the first element of the 2D array
+	// Pointer
 	pnew_state = &new_state[0][0]; 
 	// Call the function which returns the pointer to the 
 	// new state 2D array
-	int *caca = evolve(pnew_state, ROW, COLUMN);
+	int *stateUpdated = evolve(pnew_state, ROW, COLUMN);
+
+	for (int i= 0; i<(ROW*COLUMN); i++)
+	{
+		printf("World %d: %d\n", i,*(stateUpdated+i));
+	}
+
 	return 0;
 }
 
@@ -45,72 +59,76 @@ int main(void)
 int *evolve(int * next_state , int row, int col)
 {
 
-	// Define new array
-	int array[row][col];
-	// Loop for each cell of the map to know the state 
-	// of the cell and its neighbours
-	for (int i = 1; i < col - 1; i++)
+	// Declare a new 2D array
+	// Is filled with 0 because the size of de array
+	// is bigger then the world (2 rows and 2 columns bigger)
+	//int array[row][col];
+	// Pointer declaration
+	//int * pointer;
+	pointer = &array[0][0];
+	for (int e = 0; e < row*col;e++)
 	{
-		for (int j = 1; j < row - 1; j++)
+		printf("HOLA%d: %d\n",e,*(pointer + e) );
+	}
+	
+	// Loop for each cell of the map to know the state 
+	// of the cell and its 
+	for (int i = 1; i < row - 1; i++)
+	{
+		for (int j = 1; j < col - 1; j++)
 		{
-			int cont = 0;
 			// Count the number of neighbours alive
-			if (new_state[i-1][j-1] == 1)
+			int cont = 0;
+			// Accessing to the upper-left neighboor
+			if(*(next_state + (i-1)*row + (j-1)) == 1)
 			{
 				cont = cont + 1;
 			}
-			if (new_state[i][j-1] == 1)
+			// Accessing to the upper neighbour
+			if(*(next_state + (i-1)*row + j) == 1)
 			{
 				cont = cont + 1;
 			}
-			if (new_state[i+1][j-1] == 1)
+			// Accessing to the upper-right neighbour
+			if(*(next_state + (i-1)*row + (j+1)) == 1)
 			{
 				cont = cont + 1;
 			}
-			if (new_state[i-1][j] == 1)
+			// Accessing to the left neighbour
+			if(*(next_state + i*row + (j-1)) == 1)
 			{
 				cont = cont + 1;
 			}
-			if (new_state[i+1][j] == 1)
+			// Accessing to the right neighbour
+			if(*(next_state + i*row + (j+1)) == 1)
 			{
 				cont = cont + 1;
 			}
-			if (new_state[i-1][j+1] == 1)
+			// Accessing to the bottom left neighbour
+			if(*(next_state + (i+1)*row + (j-1)) == 1)
 			{
 				cont = cont + 1;
 			}
-			if (new_state[i][j+1] == 1)
+			// Accessing to the bottom neighbour
+			if(*(next_state + (i+1)*row + j) == 1)
 			{
 				cont = cont + 1;
 			}
-			if (new_state[i+1][j+1] == 1)
+			// Accessing to the bottom-right neighbour
+			if(*(next_state + (i+1)*row + (j+1)) == 1)
 			{
 				cont = cont + 1;
 			}
 			// Call to the function that decides the new state
-			// of the cell acording to the neighbors and its state
-			array[row][col] = decision(cont,new_state[i][j]);
-			
+			// of the cell acording to the neighbors and
+			// the cell state
+			printf("Row: %d, Column: %d",i,j);
+			//array[i][j] = decision(cont,*(next_state + i*row +j));
+			*(pointer + i*row + j) = decision(cont,*(next_state + i*row +j));
 		}
 	}
+	// Pointer to the first element of the 2D array
 
-	int * pointer;
-	pointer = &array[0][0];
-	// Si queremos hacer una matrix 100x100, la haremos 102x102 para
-	// poder saber la informacion de los bordes y evitar errores
-
-	// 1. Recuperar la matriz
-
-	// 2. Doble for para acceder a cada celda
-
-	// 3. Conjunto de IF para saber el el siguiente estado
-
-
-	// Crear nueva matriz 
-
-	// Crear pointer de esta nueva matriz y asociarlo
-
-	// Return el pointer
 	return pointer;
 }
 
