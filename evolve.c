@@ -1,5 +1,5 @@
 #import <stdio.h>
-
+#import <stdlib.h>
 
 // Variable declaration
 
@@ -7,16 +7,11 @@
 #define ROW  6
 #define COLUMN  6
 
-int new_state[ROW][COLUMN] = { { 0, 0, 0, 0, 0, 0},
-								{ 0, 1, 1, 0, 1, 0},
-								{ 0, 0, 0, 0, 0, 0},
-								{ 0, 1, 1, 1, 0, 0},
-								{ 0, 1, 0, 1, 1, 0},
-								{ 0, 0, 0, 0, 0, 0}};
 
 
 
-int *pnew_state;
+
+//int *pnew_state;
 
 
 // Se necessita reservar la memoria con alloc
@@ -25,8 +20,8 @@ int *pnew_state;
 // que corresponde a los valores de la array esta se alibera
 // de forma automatica y hace que los resultado obtenidos
 // no se parezcan ni en pintura a los reales
-int array[ROW][COLUMN];
-int * pointer;
+//int array[ROW][COLUMN];
+//int * pointer;
 
 
 
@@ -37,19 +32,31 @@ int * pointer;
 
 int * evolve (int* next_state, int row, int col);
 int decision(int cont, int cell_state);
+void freeMem(int *pointer, int row, int col);
 
 int main(void)
 {
+	int new_state[ROW][COLUMN] = { { 0, 0, 0, 0, 0, 0},
+								{ 0, 1, 1, 0, 1, 0},
+								{ 0, 0, 0, 0, 0, 0},
+								{ 0, 1, 1, 1, 0, 0},
+								{ 0, 1, 0, 1, 1, 0},
+								{ 0, 0, 0, 0, 0, 0}};
+	int *pnew_state = (int *)malloc(ROW*COLUMN*sizeof(int));
 	// Pointer
 	pnew_state = &new_state[0][0]; 
 	// Call the function which returns the pointer to the 
 	// new state 2D array
+	//int *stateUpdated = (int *)malloc(ROW*COLUMN*sizeof(int));
 	int *stateUpdated = evolve(pnew_state, ROW, COLUMN);
 
 	for (int i= 0; i<(ROW*COLUMN); i++)
 	{
 		printf("World %d: %d\n", i,*(stateUpdated+i));
 	}
+
+	// Free memory
+	free(stateUpdated);
 
 	return 0;
 }
@@ -65,7 +72,12 @@ int *evolve(int * next_state , int row, int col)
 	//int array[row][col];
 	// Pointer declaration
 	//int * pointer;
-	pointer = &array[0][0];
+	// Allocate memory for the new array
+	//int array[row][col];
+	int *pointer = (int *)malloc(row*col*sizeof(int));
+	printf("CACA:%lu\n",sizeof(pointer));
+	// Point to the existing array
+	//pointer = &array[0][0];
 	for (int e = 0; e < row*col;e++)
 	{
 		printf("HOLA%d: %d\n",e,*(pointer + e) );
@@ -127,8 +139,10 @@ int *evolve(int * next_state , int row, int col)
 			*(pointer + i*row + j) = decision(cont,*(next_state + i*row +j));
 		}
 	}
-	// Pointer to the first element of the 2D array
 
+	// Free memory of the old state of the cells
+	//freeMem(next_state, row, col);
+	// Pointer to the first element of the 2D array
 	return pointer;
 }
 
@@ -147,4 +161,12 @@ int decision(int cont, int cell_state)
 	printf("Cell %d", decision);
 	printf("\n");
 	return decision;
+}
+
+// Function to free the memory
+void freeMem(int * pointer, int row, int col) {
+    //for (int i = 1; i < row*col; ++i) {
+    //    free(pointer+i);
+    //}
+    free(pointer);
 }
