@@ -1,12 +1,5 @@
-#import <stdio.h>
-#import <stdlib.h>
-
-// Variable declaration
-
-// definir la nueva matriz que voy a utilizar
-#define ROW  6
-#define COLUMN  6
-
+#include <stdio.h>
+#include <stdlib.h>
 
 // Function definition
 
