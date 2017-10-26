@@ -1,8 +1,8 @@
 #ifndef EVOLVE_H_
 #define EVOLVE_H_
 
-#define ROW  6
-#define COLUMN  6
+#define ROW  50
+#define COLUMN  50
 
 const int neighbours[8][2];
 

@@ -20,7 +20,7 @@ int decision(int cont, int cell_state)
 {
 	// Most of the cases the new cell is 0
 	int decision = 0;
-	if (cell_state == 1 && (cont == 2 | cont == 3))
+	if (cell_state == 1 && (cont == 2 || cont == 3))
 	{
 		decision = 1;
 	}
