@@ -1,6 +1,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+
+// Variable definition
+
+int neighbours[8][2] = {{-1,-1},
+                        {-1, 0},
+                        {-1, 1},
+                        {0, -1},
+                        {0,  1},
+                        {1, -1},
+                        {1,  0},
+                        {1,  1}};
+
+
 // Function definition
 
 int decision(int cont, int cell_state)
@@ -40,54 +53,19 @@ int *evolve(int * next_state , int row, int col)
 	{
 		printf("HOLA%d: %d\n",e,*(pointer + e) );
 	}
-	
 	// Loop for each cell of the map to know the state 
 	// of the cell and its 
 	for (int i = 1; i < row - 1; i++)
 	{
 		for (int j = 1; j < col - 1; j++)
 		{
-			// Count the number of neighbours alive
 			int cont = 0;
-			// Accessing to the upper-left neighboor
-			if(*(next_state + (i-1)*row + (j-1)) == 1)
+			for (int k = 0; k < 8; k++)
 			{
-				cont = cont + 1;
-			}
-			// Accessing to the upper neighbour
-			if(*(next_state + (i-1)*row + j) == 1)
-			{
-				cont = cont + 1;
-			}
-			// Accessing to the upper-right neighbour
-			if(*(next_state + (i-1)*row + (j+1)) == 1)
-			{
-				cont = cont + 1;
-			}
-			// Accessing to the left neighbour
-			if(*(next_state + i*row + (j-1)) == 1)
-			{
-				cont = cont + 1;
-			}
-			// Accessing to the right neighbour
-			if(*(next_state + i*row + (j+1)) == 1)
-			{
-				cont = cont + 1;
-			}
-			// Accessing to the bottom left neighbour
-			if(*(next_state + (i+1)*row + (j-1)) == 1)
-			{
-				cont = cont + 1;
-			}
-			// Accessing to the bottom neighbour
-			if(*(next_state + (i+1)*row + j) == 1)
-			{
-				cont = cont + 1;
-			}
-			// Accessing to the bottom-right neighbour
-			if(*(next_state + (i+1)*row + (j+1)) == 1)
-			{
-				cont = cont + 1;
+				if (*(next_state + (i + neighbours[k][0])*row + j+ neighbours[k][1]) == 1)
+				{
+					cont++;
+				} 
 			}
 			// Call to the function that decides the new state
 			// of the cell acording to the neighbors and
