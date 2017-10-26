@@ -7,6 +7,5 @@
 const int neighbours[8][2];
 
 int *evolve(int * next_state , int row, int col);
-int decision(int cont, int cell_state);
 
 #endif
