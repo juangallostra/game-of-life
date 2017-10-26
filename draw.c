@@ -1,17 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "evolve.h"
-
-// int new_state[ROW][COLUMN] = {  { 0, 0, 0, 0, 0, 0},
-// 								{ 0, 1, 1, 0, 1, 0},
-// 								{ 0, 0, 0, 0, 0, 0},
-// 								{ 0, 1, 1, 1, 0, 0},
-// 								{ 0, 1, 0, 1, 1, 0},
-// 								{ 0, 0, 0, 0, 0, 0}};
-
-
-
-//int *pnew_state;
 
 
 // Se necessita reservar la memoria con alloc
@@ -20,9 +10,8 @@
 // que corresponde a los valores de la array esta se alibera
 // de forma automatica y hace que los resultado obtenidos
 // no se parezcan ni en pintura a los reales
-int * pointer;
 
-
+// void draw(*)
 
 int main(void)
 {
@@ -32,21 +21,21 @@ int main(void)
 								{ 0, 1, 1, 1, 0, 0},
 								{ 0, 1, 0, 1, 1, 0},
 								{ 0, 0, 0, 0, 0, 0}};
-	int *pnew_state = (int *)malloc(ROW*COLUMN*sizeof(int));
-	// Pointer
-	pnew_state = &new_state[0][0]; 
-	// Call the function which returns the pointer to the 
-	// new state 2D array
-	//int *stateUpdated = (int *)malloc(ROW*COLUMN*sizeof(int));
-	int *stateUpdated = evolve(pnew_state, ROW, COLUMN);
+	//int *pnew_state = (int *)malloc(ROW*COLUMN*sizeof(int));
+	int *pnew_state;
+	pnew_state = &new_state[0][0];
 
-	for (int i= 0; i<(ROW*COLUMN); i++)
+	while(1)
 	{
-		printf("World %d: %d\n", i,*(stateUpdated+i));
+		int *stateUpdated = evolve(pnew_state, ROW, COLUMN);
+		memcpy(pnew_state, stateUpdated, ROW*COLUMN*sizeof(int));
+		free(stateUpdated);
+		// draw(pnew_state);
+		for (int e = 0; e < ROW*COLUMN;e++)
+		{
+			printf("World %d: %d\n",e,*(pnew_state + e) );
+		}
+
 	}
-
-	// Free memory
-	free(stateUpdated);
-
 	return 0;
 }
