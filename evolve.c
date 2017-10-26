@@ -8,59 +8,25 @@
 #define COLUMN  6
 
 
+// Function definition
 
-
-
-//int *pnew_state;
-
-
-// Se necessita reservar la memoria con alloc
-// Si no se declaran estas variables de forma global
-// Al salir de la funcion "evolve" como no se ha reservado 
-// que corresponde a los valores de la array esta se alibera
-// de forma automatica y hace que los resultado obtenidos
-// no se parezcan ni en pintura a los reales
-//int array[ROW][COLUMN];
-//int * pointer;
-
-
-
-
-
-
-// Function declaration
-
-int * evolve (int* next_state, int row, int col);
-int decision(int cont, int cell_state);
-
-int main(void)
+int decision(int cont, int cell_state)
 {
-	int new_state[ROW][COLUMN] = { { 0, 0, 0, 0, 0, 0},
-								{ 0, 1, 1, 0, 1, 0},
-								{ 0, 0, 0, 0, 0, 0},
-								{ 0, 1, 1, 1, 0, 0},
-								{ 0, 1, 0, 1, 1, 0},
-								{ 0, 0, 0, 0, 0, 0}};
-	int *pnew_state = (int *)malloc(ROW*COLUMN*sizeof(int));
-	// Pointer
-	pnew_state = &new_state[0][0]; 
-	// Call the function which returns the pointer to the 
-	// new state 2D array
-	//int *stateUpdated = (int *)malloc(ROW*COLUMN*sizeof(int));
-	int *stateUpdated = evolve(pnew_state, ROW, COLUMN);
-
-	for (int i= 0; i<(ROW*COLUMN); i++)
+	// Most of the cases the new cell is 0
+	int decision = 0;
+	if (cell_state == 1 && (cont == 2 | cont == 3))
 	{
-		printf("World %d: %d\n", i,*(stateUpdated+i));
+		decision = 1;
 	}
-
-	// Free memory
-	free(stateUpdated);
-
-	return 0;
+	else if (cell_state == 0 && cont == 3)
+	{
+		decision = 1;
+	}
+	printf("Cell %d", decision);
+	printf("\n");
+	return decision;
 }
 
-// Function definition
 
 int *evolve(int * next_state , int row, int col)
 {
@@ -143,21 +109,4 @@ int *evolve(int * next_state , int row, int col)
 	//freeMem(next_state, row, col);
 	// Pointer to the first element of the 2D array
 	return pointer;
-}
-
-int decision(int cont, int cell_state)
-{
-	// Most of the cases the new cell is 0
-	int decision = 0;
-	if (cell_state == 1 && (cont == 2 | cont == 3))
-	{
-		decision = 1;
-	}
-	else if (cell_state == 0 && cont == 3)
-	{
-		decision = 1;
-	}
-	printf("Cell %d", decision);
-	printf("\n");
-	return decision;
 }
