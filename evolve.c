@@ -32,7 +32,6 @@
 
 int * evolve (int* next_state, int row, int col);
 int decision(int cont, int cell_state);
-void freeMem(int *pointer, int row, int col);
 
 int main(void)
 {
@@ -161,12 +160,4 @@ int decision(int cont, int cell_state)
 	printf("Cell %d", decision);
 	printf("\n");
 	return decision;
-}
-
-// Function to free the memory
-void freeMem(int * pointer, int row, int col) {
-    //for (int i = 1; i < row*col; ++i) {
-    //    free(pointer+i);
-    //}
-    free(pointer);
 }
