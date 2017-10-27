@@ -22,6 +22,17 @@ int main(void)
 	new_state[2][1] = 1;
 	new_state[2][2] = 1;
 	new_state[2][3] = 1;
+
+
+	new_state[2][23] = 1;
+	new_state[2][24] = 1;
+	new_state[3][24] = 1;
+	new_state[3][22] = 1;
+
+	new_state[5][20] = 1;
+	new_state[6][20] = 1;
+	new_state[6][21] = 1;
+	new_state[7][20] = 1;
 	
 	int *pnew_state;
 	pnew_state = &new_state[0][0];
