@@ -1,9 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+// Coder: Gakusei
 
 // Variable definition
 
+// Define an array of the neighboors coordinates
+// to facilitate the acces to the cell state
 int neighbours[8][2] = {{-1,-1},
                         {-1, 0},
                         {-1, 1},
@@ -20,10 +23,13 @@ int decision(int cont, int cell_state)
 {
 	// Most of the cases the new cell is 0
 	int decision = 0;
+
+	// Only 2 or 3 neighboors are alive the cell is also alive
 	if (cell_state == 1 && (cont == 2 || cont == 3))
 	{
 		decision = 1;
 	}
+	// Cell is dead and there are 3 neighboors alive
 	else if (cell_state == 0 && cont == 3)
 	{
 		decision = 1;
@@ -35,18 +41,10 @@ int decision(int cont, int cell_state)
 int *evolve(int * state , int row, int col)
 {
 
-	// Allocate memory for the new array
-
-	// Se necessita reservar la memoria con alloc
-	// Si no se declaran estas variables de forma global
-	// Al salir de la funcion "evolve" como no se ha reservado 
-	// que corresponde a los valores de la array esta se alibera
-	// de forma automatica y hace que los resultado obtenidos
-	// no se parezcan ni en pintura a los reales
-
+	// Reserve memory for the cells
 	int *pointer = (int *)malloc(row*col*sizeof(int));
 	// Loop for each cell of the map to know the state 
-	// of the cell and its 
+	// of the cell and its neighboors
 	for (int i = 1; i < row - 1; i++)
 	{
 		for (int j = 1; j < col - 1; j++)
@@ -59,14 +57,11 @@ int *evolve(int * state , int row, int col)
 					cont++;
 				} 
 			}
-			// Call to the function that decides the new state
-			// of the cell acording to the neighbors and
-			// the cell state
-			//array[i][j] = decision(cont,*(next_state + i*row +j));
+			// Call to the de decision function and store the content into its corresponding adress
 			*(pointer + i*row + j) = decision(cont,*(state + i*row +j));
 		}
 	}
 
-	// return pointer to the first element of the 2D array
+	// Return pointer of the first element of the the memory
 	return pointer;
 }

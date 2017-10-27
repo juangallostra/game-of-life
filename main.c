@@ -39,14 +39,16 @@ int main(void)
 
 	while(1)
 	{
+		// Call the function to draw the actual state
 		draw(pnew_state, ROW, COLUMN);
+		// Call the function to compute the next state 
 		int *stateUpdated = evolve(pnew_state, ROW, COLUMN);
+		// Copy all the information stored from the pointer stateUpdate 
+		// till the size to the pointer pnew_state
 		memcpy(pnew_state, stateUpdated, ROW*COLUMN*sizeof(int));
+		// Free memory
 		free(stateUpdated);
-		// for (int e = 0; e < ROW*COLUMN;e++)
-		// {
-		// 	printf("World %d: %d\n",e,*(pnew_state + e) );
-		// }
+
 
 	}
 	return 0;
