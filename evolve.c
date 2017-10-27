@@ -36,6 +36,14 @@ int *evolve(int * state , int row, int col)
 {
 
 	// Allocate memory for the new array
+
+	// Se necessita reservar la memoria con alloc
+	// Si no se declaran estas variables de forma global
+	// Al salir de la funcion "evolve" como no se ha reservado 
+	// que corresponde a los valores de la array esta se alibera
+	// de forma automatica y hace que los resultado obtenidos
+	// no se parezcan ni en pintura a los reales
+
 	int *pointer = (int *)malloc(row*col*sizeof(int));
 	// Loop for each cell of the map to know the state 
 	// of the cell and its 
