@@ -4,6 +4,8 @@
 #include <ncurses.h>
 #include <unistd.h>
 
+// coder #define true rand()&1
+
 void draw(unsigned short *state, unsigned short terminator)
 {
 	initscr();
@@ -18,8 +20,7 @@ void draw(unsigned short *state, unsigned short terminator)
 		index++;
 		mvprintw(x, y, "X");
 	}
-	printf("printed %d\n cells", index);
 	refresh();
-	usleep(700000);
+	usleep(70000);
 	endwin();
 }

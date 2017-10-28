@@ -24,12 +24,12 @@ int is_alive(int cont, int cell_state)
 	// Most of the cases the new cell is 0
 	int decision = 0;
 
-	// Only 2 or 3 neighboors are alive the cell is also alive
+	// Only 2 or 3 neighboors are alive the cell is also alive -> stay alive
 	if (cell_state == 1 && (cont == 2 || cont == 3))
 	{
 		decision = 1;
 	}
-	// Cell is dead and there are 3 neighboors alive
+	// Cell is dead and there are 3 neighboors alive -> bring cell to live
 	else if (cell_state == 0 && cont == 3)
 	{
 		decision = 1;
@@ -50,9 +50,8 @@ unsigned short *evolve(unsigned short * state , int row, int col, unsigned short
 	{
 		for (int j = 1; j < col - 1; j++)
 		{
-			// Check if current_state[cell]=alive
+			// Check if cell is alive in the current state
 			unsigned short cell = (i << 8) | j; // cell value in array if alive
-			//printf("Checking at: %d\n", cell);
 			int curr_cell = 0; // until found otherwise, cell is dead
 			unsigned short index = 0;	// current index in alive cells array
 			// while termination condition is not reached
@@ -65,13 +64,11 @@ unsigned short *evolve(unsigned short * state , int row, int col, unsigned short
 				}
 				index++;
 			}
-			
 			// Check if neighbours are present in alive cells array
-
+			// and keep count on how many of them are alive
 			int neighbour_count = 0;
 			for (int k = 0; k < 8; k++)
 			{
-				// neighbour cell = i + neighbours[k][0], neighbours[k][1]
 				unsigned short neighbour = ((i + neighbours[k][0])<<8) | (j + neighbours[k][1]);
 				unsigned short index = 0;
 				while (*(state + index) != terminator) 
@@ -84,32 +81,23 @@ unsigned short *evolve(unsigned short * state , int row, int col, unsigned short
 					index++;
 				}
 			}			
-			// decide if  next_state[cell]=alive and increment counter
-			//printf("%d\n", is_alive(neighbour_count, curr_cell));
-
+			// check if the cell will be alive in the next state and, if so, increment counter
 			if (is_alive(neighbour_count, curr_cell))
 			{
 				*(pointer + alive_cells_count) = (i<<8) | j;
 				alive_cells_count++;
 			}
-			// if alive, add to local scope list
-
-			// allocate memory for the final state
-			// build alive vector and return
-
-			// Call to the de decision function and store the content into its corresponding adress
-			//*(pointer + i*row + j) = decision(cont,*(state + i*row +j));
 		}
 	}
 	// Once all decisions have been made, build the final state
 	unsigned short *final_state = (unsigned short *)malloc((alive_cells_count)*sizeof(unsigned short));
-
 	for (int k = 0; k < alive_cells_count; k++)
 	{
 		*(final_state + k) = *(pointer + k);
 	}
+	// Add terminator flag at the end of the array
 	*(final_state + alive_cells_count) = terminator;
 	free(pointer);
-	// Return pointer of the first element of the the memory
+	// Return  a pointer to the first element of the memory block that allocates the state
 	return final_state;
 }

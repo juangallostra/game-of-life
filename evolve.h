@@ -1,6 +1,8 @@
 #ifndef EVOLVE_H_
 #define EVOLVE_H_
 
+// Coder: Gakusei
+
 #define ROW  200
 #define COLUMN  200
 #define TERMINATOR 65535
