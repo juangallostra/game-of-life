@@ -1,4 +1,4 @@
-
+# coder: #define true rand()&1
 CC = gcc
 LIBS = -lncurses
 DEPS = draw.h evolve.h
