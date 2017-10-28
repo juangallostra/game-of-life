@@ -52,8 +52,8 @@ int main(void)
 			mat[40+2][60+4]=1;
 			break;
 		default:
-			printf("Please select a number between 1 a 3:");
-			break;
+			printf("Invalid pattern\n");
+			return 0;
 
 	}
 	
@@ -71,8 +71,6 @@ int main(void)
 		memcpy(pnew_state, stateUpdated, ROW*COLUMN*sizeof(int));
 		// Free memory
 		free(stateUpdated);
-
-
 	}
 	return 0;
 }
