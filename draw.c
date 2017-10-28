@@ -4,26 +4,22 @@
 #include <ncurses.h>
 #include <unistd.h>
 
-void draw(int *state, int rows, int cols)
+void draw(unsigned short *state)
 {
 	initscr();
 	noecho();
+	erase();
 	curs_set(FALSE);
-	for (int i = 1; i < rows - 1; i++)
+	unsigned short index = 0;
+	while (*(state + index) != 65535)
 	{
-		for (int j = 1; j < cols - 1; j++)
-		{
-			if (*(state+i*rows+j)==1)
-			{
-				mvprintw(i, j, "X");
-			}
-			else
-			{
-				mvprintw(i, j, " ");
-			}
-		}
+		int x = (*(state + index)) >> 8;
+		int y = (*(state + index)) & 255;
+		index++;
+		mvprintw(x, y, "X");
 	}
+	printf("printed %d\n cells", index);
 	refresh();
-	usleep(70000);
+	usleep(700000);
 	endwin();
 }

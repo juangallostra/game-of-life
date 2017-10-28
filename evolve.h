@@ -6,6 +6,6 @@
 
 const int neighbours[8][2];
 
-int *evolve(int * next_state , int row, int col);
+unsigned short *evolve(unsigned short * next_state , int row, int col);
 
 #endif
