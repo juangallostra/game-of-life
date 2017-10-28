@@ -38,7 +38,7 @@ int is_alive(int cont, int cell_state)
 }
 
 
-unsigned short *evolve(unsigned short * state , int row, int col)
+unsigned short *evolve(unsigned short * state , int row, int col, unsigned short terminator)
 {
 
 	// Reserve memory for the worst case scenario (all alive)
@@ -56,7 +56,7 @@ unsigned short *evolve(unsigned short * state , int row, int col)
 			int curr_cell = 0; // until found otherwise, cell is dead
 			unsigned short index = 0;	// current index in alive cells array
 			// while termination condition is not reached
-			while (*(state + index) != 65535) 
+			while (*(state + index) != terminator) 
 			{
 				if (*(state + index) == cell)
 				{
@@ -74,7 +74,7 @@ unsigned short *evolve(unsigned short * state , int row, int col)
 				// neighbour cell = i + neighbours[k][0], neighbours[k][1]
 				unsigned short neighbour = ((i + neighbours[k][0])<<8) | (j + neighbours[k][1]);
 				unsigned short index = 0;
-				while (*(state + index) != 65535) 
+				while (*(state + index) != terminator) 
 				{
 					if (*(state + index) == neighbour)
 					{
@@ -108,7 +108,7 @@ unsigned short *evolve(unsigned short * state , int row, int col)
 	{
 		*(final_state + k) = *(pointer + k);
 	}
-	*(final_state + alive_cells_count) = 65535;
+	*(final_state + alive_cells_count) = terminator;
 	free(pointer);
 	// Return pointer of the first element of the the memory
 	return final_state;

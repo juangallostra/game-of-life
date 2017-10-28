@@ -4,14 +4,14 @@
 #include <ncurses.h>
 #include <unistd.h>
 
-void draw(unsigned short *state)
+void draw(unsigned short *state, unsigned short terminator)
 {
 	initscr();
 	noecho();
 	erase();
 	curs_set(FALSE);
 	unsigned short index = 0;
-	while (*(state + index) != 65535)
+	while (*(state + index) != terminator)
 	{
 		int x = (*(state + index)) >> 8;
 		int y = (*(state + index)) & 255;
