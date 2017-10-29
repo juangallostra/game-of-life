@@ -21,20 +21,17 @@ int neighbours[8][2] = {{-1,-1},
 
 int decision(int cont, int cell_state)
 {
-	// Most of the cases the new cell is 0
-	int decision = 0;
-
 	// Only 2 or 3 neighboors are alive the cell is also alive
 	if (cell_state == 1 && (cont == 2 || cont == 3))
 	{
-		decision = 1;
+		return 1;
 	}
 	// Cell is dead and there are 3 neighboors alive
 	else if (cell_state == 0 && cont == 3)
 	{
-		decision = 1;
+		return 1;
 	}
-	return decision;
+	return 0;
 }
 
 
