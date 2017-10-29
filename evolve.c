@@ -1,5 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "string.h"
+
+#include "evolve.h"
 
 // Coders: Gakusei and #define true rand()&1
 
@@ -35,15 +38,12 @@ int is_alive(int cont, int cell_state)
 	return 0;
 }
 
-unsigned short *add_to_array(unsigned short *pointer, int cell, int length)
+unsigned short *add_to_array(unsigned short *pointer, unsigned short cell, int count)
 {
-	unsigned short *new_array = (unsigned short *)malloc((length+2)*sizeof(unsigned short));
-	for (int i = 0; i < length; i++)
-	{
-		*(new_array + i) = *(pointer + i);
-	}
+	unsigned short *new_array = malloc((count+2)*sizeof(*pointer));
+	memcpy(new_array, pointer, (count+1)*sizeof(*pointer));
 	free(pointer);
-	*(new_array + length) = cell;
+	*(new_array + count) = cell;
 	return new_array;
 }
 
@@ -64,11 +64,12 @@ int find_in_array(unsigned short *state, int cell, int terminator)
 	return 0;
 }
 
-unsigned short *evolve(unsigned short * state , int row, int col, unsigned short terminator)
+tuple *evolve(unsigned short * state , int row, int col, unsigned short terminator)
 {
 	// pointer will store the evolved state of the system
 	unsigned short *pointer;
-	unsigned short alive_cells_count = 0;
+	int alive_cells_count = 0;
+	tuple *evolved = malloc(sizeof(tuple));
 	// Loop for each cell of the map to know the state 
 	// of the cell and its neighboors
 	for (int i = 1; i < row - 1; i++)
@@ -92,15 +93,15 @@ unsigned short *evolve(unsigned short * state , int row, int col, unsigned short
 				{
 					neighbour_count++;
 				}
-			}			
+			}	
+			// The first time the memory allocation has to be initialized
+			if (!alive_cells_count)
+			{
+				pointer = malloc(sizeof(*pointer));
+			}
 			// check if the cell will be alive in the next state and, if so update array
 			if (is_alive(neighbour_count, curr_cell_state))
 			{	
-				// The first time the memory allocation has to be initialized
-				if (!alive_cells_count)
-				{
-					pointer = (unsigned short *)malloc(sizeof(unsigned short));
-				}
 				// add cell to dynamic array
 				pointer = add_to_array(pointer, (i<<8) | j, alive_cells_count);
 				alive_cells_count++;
@@ -110,5 +111,7 @@ unsigned short *evolve(unsigned short * state , int row, int col, unsigned short
 	// Add the terminator at the end of the array
 	*(pointer + alive_cells_count) = terminator;
 	// Return  a pointer to the first element of the memory block that allocates the state
-	return pointer;
+	(*evolved).length = alive_cells_count + 1;
+	(*evolved).state = pointer;
+	return evolved;
 }

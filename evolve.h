@@ -7,8 +7,11 @@
 #define COLUMN  200
 #define TERMINATOR 65535
 
-const int neighbours[8][2];
+typedef struct tuple {
+	int length;
+	unsigned short * state;
+} tuple;
 
-unsigned short *evolve(unsigned short * next_state , int row, int col, unsigned short terminator);
+tuple *evolve(unsigned short * next_state , int row, int col, unsigned short terminator);
 
 #endif
