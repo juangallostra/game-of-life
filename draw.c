@@ -21,6 +21,6 @@ void draw(unsigned short *state, unsigned short terminator)
 		mvprintw(x, y, "X");
 	}
 	refresh();
-	usleep(70000);
+	usleep(1000000);
 	endwin();
 }

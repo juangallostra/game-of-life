@@ -21,28 +21,53 @@ int neighbours[8][2] = {{-1,-1},
 
 int is_alive(int cont, int cell_state)
 {
-	// Most of the cases the new cell is 0
-	int decision = 0;
-
 	// Only 2 or 3 neighboors are alive the cell is also alive -> stay alive
 	if (cell_state == 1 && (cont == 2 || cont == 3))
 	{
-		decision = 1;
+		return 1;
 	}
 	// Cell is dead and there are 3 neighboors alive -> bring cell to live
 	else if (cell_state == 0 && cont == 3)
 	{
-		decision = 1;
+		return 1;
 	}
-	return decision;
+	// otherwise cell is dead
+	return 0;
 }
 
+unsigned short *add_to_array(unsigned short *pointer, int cell, int length)
+{
+	unsigned short *new_array = (unsigned short *)malloc((length+2)*sizeof(unsigned short));
+	for (int i = 0; i < length; i++)
+	{
+		*(new_array + i) = *(pointer + i);
+	}
+	free(pointer);
+	*(new_array + length) = cell;
+	return new_array;
+}
+
+int find_in_array(unsigned short *state, int cell, int terminator)
+{
+	// while termination condition is not reached
+	// iterate through the state array to see if
+	// the specified cell is found
+	unsigned short index = 0;
+	while (*(state + index) != terminator) 
+	{
+		if (*(state + index) == cell)
+		{
+			return 1;
+		}
+		index++;
+	}
+	return 0;
+}
 
 unsigned short *evolve(unsigned short * state , int row, int col, unsigned short terminator)
 {
-
-	// Reserve memory for the worst case scenario (all alive)
-	unsigned short *pointer = (unsigned short *)malloc(row*col*sizeof(unsigned short));
+	// pointer will store the evolved state of the system
+	unsigned short *pointer;
 	unsigned short alive_cells_count = 0;
 	// Loop for each cell of the map to know the state 
 	// of the cell and its neighboors
@@ -50,20 +75,12 @@ unsigned short *evolve(unsigned short * state , int row, int col, unsigned short
 	{
 		for (int j = 1; j < col - 1; j++)
 		{
-			// Check if cell is alive in the current state
+			// Check if cell is alive in the current state of the system
 			unsigned short cell = (i << 8) | j; // cell value in array if alive
-			int curr_cell = 0; // until found otherwise, cell is dead
-			unsigned short index = 0;	// current index in alive cells array
-			// while termination condition is not reached
-			while (*(state + index) != terminator) 
-			{
-				if (*(state + index) == cell)
-				{
-					curr_cell = 1;
-					break;
-				}
-				index++;
-			}
+			int curr_cell_state = 0; 			// until found otherwise, cell is dead
+			unsigned short index = 0;			// current index in alive cells array
+			// see if the current cell is found alive
+			curr_cell_state = find_in_array(state, cell, terminator);
 			// Check if neighbours are present in alive cells array
 			// and keep count on how many of them are alive
 			int neighbour_count = 0;
@@ -71,33 +88,27 @@ unsigned short *evolve(unsigned short * state , int row, int col, unsigned short
 			{
 				unsigned short neighbour = ((i + neighbours[k][0])<<8) | (j + neighbours[k][1]);
 				unsigned short index = 0;
-				while (*(state + index) != terminator) 
+				if(find_in_array(state, neighbour, terminator))
 				{
-					if (*(state + index) == neighbour)
-					{
-						neighbour_count++;
-						break;
-					}
-					index++;
+					neighbour_count++;
 				}
 			}			
-			// check if the cell will be alive in the next state and, if so, increment counter
-			if (is_alive(neighbour_count, curr_cell))
-			{
-				*(pointer + alive_cells_count) = (i<<8) | j;
+			// check if the cell will be alive in the next state and, if so update array
+			if (is_alive(neighbour_count, curr_cell_state))
+			{	
+				// The first time the memory allocation has to be initialized
+				if (!alive_cells_count)
+				{
+					pointer = (unsigned short *)malloc(sizeof(unsigned short));
+				}
+				// add cell to dynamic array
+				pointer = add_to_array(pointer, (i<<8) | j, alive_cells_count);
 				alive_cells_count++;
 			}
 		}
 	}
-	// Once all decisions have been made, build the final state
-	unsigned short *final_state = (unsigned short *)malloc((alive_cells_count)*sizeof(unsigned short));
-	for (int k = 0; k < alive_cells_count; k++)
-	{
-		*(final_state + k) = *(pointer + k);
-	}
-	// Add terminator flag at the end of the array
-	*(final_state + alive_cells_count) = terminator;
-	free(pointer);
+	// Add the terminator at the end of the array
+	*(pointer + alive_cells_count) = terminator;
 	// Return  a pointer to the first element of the memory block that allocates the state
-	return final_state;
+	return pointer;
 }
