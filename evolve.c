@@ -39,7 +39,7 @@ int *evolve(int * state , int row, int col)
 {
 
 	// Reserve memory for the cells
-	int *pointer = (int *)malloc(row*col*sizeof(int));
+	int *pointer = malloc(row*col*sizeof(*state));
 	// Loop for each cell of the map to know the state 
 	// of the cell and its neighboors
 	for (int i = 1; i < row - 1; i++)
