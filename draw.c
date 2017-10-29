@@ -4,6 +4,8 @@
 #include <ncurses.h>
 #include <unistd.h>
 
+// coder: #define true rand()&1
+
 void draw(int *state, int rows, int cols)
 {
 	initscr();

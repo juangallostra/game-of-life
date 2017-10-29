@@ -6,7 +6,7 @@
 #include "evolve.h"
 #include "draw.h"
 
-// Coders: #define true rand()&1
+// coder: #define true rand()&1
 
 int main(void)
 {
