@@ -6,10 +6,8 @@
 
 // Coders: Gakusei and #define true rand()&1
 
-// Variable definition
-
-// Define an array of the neighboors coordinates
-// to facilitate the acces to the cell state
+// Define the array of the neighbours coordinates
+// to be checked for each cell
 int neighbours[8][2] = {{-1,-1},
                         {-1, 0},
                         {-1, 1},
@@ -20,113 +18,167 @@ int neighbours[8][2] = {{-1,-1},
                         {1,  1}};
 
 
-// Function definition
+// Function definitions
+
 int compare(const void* a, const void* b)
 {
+	/*
+	Given to values, return if the first value is greater, equal or lower
+	than the second number by returning respectively a number lower, equal
+	or greater than 0
+	*/
     return *(unsigned short *)a - *(unsigned short *)b;
 }
 
-int is_alive(int cont, int cell_state)
+int is_alive(int alive_neighbours, int cell_state)
 {
+	/*
+	Given a current cell state and the number of its alive neighbours
+	return if the cell will be alive in the next iteration following
+	Conway's game of life rules.
+
+	return values:
+	0 -> dead
+	1 -> alive
+	*/
 	// Only 2 or 3 neighboors are alive the cell is also alive -> stay alive
-	if (cell_state == 1 && (cont == 2 || cont == 3))
+	if (cell_state == 1 && (alive_neighbours == 2 || alive_neighbours == 3))
 	{
 		return 1;
 	}
 	// Cell is dead and there are 3 neighboors alive -> bring cell to live
-	else if (cell_state == 0 && cont == 3)
+	else if (cell_state == 0 && alive_neighbours == 3)
 	{
 		return 1;
 	}
-	// otherwise cell is dead
+	// Otherwise cell is dead
 	return 0;
 }
 
-unsigned short *add_to_array(unsigned short *pointer, unsigned short cell, int count)
+unsigned short *add_to_array(unsigned short *first_array_element,
+							 unsigned short cell,
+							 int last_position)
 {
-	unsigned short *new_array = malloc((count+2)*sizeof(*pointer));
-	memcpy(new_array, pointer, (count+1)*sizeof(*pointer));
-	free(pointer);
-	*(new_array + count) = cell;
-	qsort(new_array, count + 1, sizeof(*new_array), &compare);
+	/*
+	This function is used to implement a dynamic array functionality.
+	It adds the given element (cell) at the last position of the array
+	that starts at the address specified by the pointer to the first
+	array element. 
+
+	It does so by first allocating a new memory block with the required
+	size for storing the actual elements, the new element and the terminator.
+	Hence the +2 in the first malloc call. Then it copies the current
+	contents of the array to this new block and frees the memory of the
+	previously used memory block. Then it orders all but the last element
+	(where the terminator will be placed) and returns the address of the
+	first element of the updated array.
+	*/
+	unsigned short *new_array = malloc((last_position + 2)*sizeof(*first_array_element));
+	// Since array indexes start at 0 and last_position is
+	// the last index -> lenght to copy = last_position + 1  
+	memcpy(new_array, first_array_element, (last_position + 1)*sizeof(*first_array_element));
+	free(first_array_element);
+	*(new_array + last_position) = cell;
+	qsort(new_array, last_position + 1, sizeof(*new_array), &compare);
 	return new_array;
 }
 
-int find_in_array(unsigned short *state, int cell, int terminator)
+int find_in_array(unsigned short *state, int cell)
 {
-	// while termination condition is not reached
-	// iterate through the state array to see if
-	// the specified cell is found
+	/* 
+	Look for the specified cell in the state array. Since the state
+	array is ordered in increasing order, if the position of the array
+	checked against holds a value bigger than the current cell it is
+	guarantedd that the cell we are looking for is not in the array.
+
+	The terminator at the end of the array assures that at least the last
+	element of the array will be bigger than the current cell.
+
+	return values:
+	0 -> not found
+	1 -> found
+	*/
 	unsigned short index = 0;
-	while (*(state + index) != terminator) 
+	while (*(state + index) <= cell) 
 	{
 		if (*(state + index) == cell)
 		{
 			return 1;
-		}
-		else if (*(state+index) > cell)	
-		{
-			return 0;
 		}
 		index++;
 	}
 	return 0;
 }
 
-tuple *evolve(unsigned short * state, int length, int row, int col, unsigned short terminator)
+tuple *evolve(unsigned short * state, int length,
+ 			  int row, int col,
+ 			  unsigned short terminator)
 {
-	// pointer will store the evolved state of the system
-	unsigned short *pointer;
+	/*
+	Given a state defined by the state array and its length,
+	a world size and the value of the terminator that marks
+	the end of the array this functions computes and returns
+	the next state.
+
+	The function returns a struct that holds a pointer to first
+	position of the array that stores the evolved state and the
+	length of the the evolved state array.
+	*/
+	unsigned short *next_state;
 	int alive_cells_count = 0;
+	int curr_cell_state;
+	unsigned short neighbour;
+	int neighbour_count;
 	tuple *evolved = malloc(sizeof(tuple));
+	// Since auxiliary functions assume the current state
+	// array is sorted we sort it to be sure of it
 	qsort(state, length, sizeof(*state), &compare);
-	// Loop for each cell of the map to know the state 
-	// of the cell and its neighboors
+	// Loop for each cell of the map retrieving its actual
+	// state and the state of its neighbours to decide if
+	// it will be alive on the next iteration
 	for (int i = 1; i < row - 1; i++)
 	{
 		for (int j = 1; j < col - 1; j++)
 		{
-			// Check if cell is alive in the current state of the system
 			unsigned short cell = (i << 8) | j; // cell value in array if alive
-			int curr_cell_state = 0; 			// until found otherwise, cell is dead
-			unsigned short index = 0;			// current index in alive cells array
 			// see if the current cell is found alive
-			curr_cell_state = find_in_array(state, cell, terminator);
+			curr_cell_state = find_in_array(state, cell);
 			// Check if neighbours are present in alive cells array
 			// and keep count on how many of them are alive
-			int neighbour_count = 0;
+			neighbour_count = 0;
 			for (int k = 0; k < 8; k++)
 			{
-				unsigned short neighbour = ((i + neighbours[k][0])<<8) | (j + neighbours[k][1]);
-				unsigned short index = 0;
-				if(find_in_array(state, neighbour, terminator))
+				neighbour = ((i + neighbours[k][0])<<8) | (j + neighbours[k][1]);
+				if(find_in_array(state, neighbour))
 				{
 					neighbour_count++;
 				}
 			}	
 			// check if the cell will be alive in the next state and, if so update array
+			// and add the current cell
 			if (is_alive(neighbour_count, curr_cell_state))
 			{	
-				// The first time the memory allocation has to be initialized
+				// The first time the array for the next state
+				// has to be initialized
 				if (!alive_cells_count)
 				{
-					pointer = malloc(sizeof(*pointer));
+					next_state = malloc(sizeof(*next_state));
 				}
-				// add cell to dynamic array
-				pointer = add_to_array(pointer, (i<<8) | j, alive_cells_count);
+				// add cell to dynamic array and update count
+				next_state = add_to_array(next_state, (i<<8) | j, alive_cells_count);
 				alive_cells_count++;
 			}
 		}
 	}
-	// Add the terminator at the end of the array
+	// Add the terminator at the end of the array to mark its end
 	// Return  a pointer to the first element of the memory block that allocates the state
 	if (!alive_cells_count)
 	{
-		pointer = malloc(sizeof(*pointer));
+		next_state = malloc(sizeof(*next_state));
 
 	}
-	*(pointer + alive_cells_count) = terminator;
+	*(next_state + alive_cells_count) = terminator;
 	(*evolved).length = alive_cells_count + 1;
-	(*evolved).state = pointer;
+	(*evolved).state = next_state;
 	return evolved;
 }
