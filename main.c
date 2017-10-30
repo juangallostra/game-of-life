@@ -30,7 +30,7 @@ int main(void)
 	{
 		case 1:/*The R-pentomino */
 			length = 6;
-			pnew_state = malloc(length*(*pnew_state));
+			pnew_state = malloc(length*sizeof(unsigned short));
 			*(pnew_state) =  ((20<<8)|85+1);
 			*(pnew_state + 1) = ((20+1<<8)|85);
 			*(pnew_state + 2) = ((20+1<<8)|85+1);
@@ -39,7 +39,7 @@ int main(void)
 			break;
 		case 2:	/*Diehard*/
 			length = 8;
-			pnew_state = malloc(length*(*pnew_state));
+			pnew_state = malloc(length*sizeof(unsigned short));
 			*(pnew_state) = ((20+1<<8)|85-2);
 			*(pnew_state + 1) =  ((20+1<<8)|85-1);
 			*(pnew_state + 2) = ((20+2<<8)|85-1);
@@ -50,7 +50,7 @@ int main(void)
 			break;
 		case 3: /*Acorn*/
 			length = 8;
-			pnew_state = malloc(length*(*pnew_state));
+			pnew_state = malloc(length*sizeof(unsigned short));
 			*(pnew_state) = ((20+1<<8)|85+1);
 			*(pnew_state + 1) = ((20<<8)|85-1);
 			*(pnew_state + 2) = ((20+2<<8)|85-1);
@@ -61,7 +61,7 @@ int main(void)
 			break;
 		case 4: /* Glider */
 			length = 6;
-			pnew_state = malloc(length*(*pnew_state));
+			pnew_state = malloc(length*sizeof(unsigned short));
 			*(pnew_state) = (1<<8)| 2;
 			*(pnew_state + 1) = (2<<8)| 3;
 			*(pnew_state + 2) = (3<<8)| 1;
