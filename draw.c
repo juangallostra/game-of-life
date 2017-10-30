@@ -4,6 +4,9 @@
 #include <ncurses.h>
 #include <unistd.h>
 
+#define X_OFFSET 90
+#define Y_OFFSET 90
+
 // coder #define true rand()&1
 
 void draw(unsigned short *state, unsigned short terminator)
@@ -18,8 +21,8 @@ void draw(unsigned short *state, unsigned short terminator)
 		int x = (*(state + index)) >> 8;
 		int y = (*(state + index)) & 255;
 		index++;
-		mvprintw(x, y, "X");
+		mvaddch(x-X_OFFSET, y-Y_OFFSET, ACS_CKBOARD);
 	}
 	refresh();
-	usleep(50000);
+	usleep(70000);
 }
