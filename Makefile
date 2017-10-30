@@ -9,3 +9,6 @@ OBJ = main.o draw.o evolve.o
 
 game_of_life: $(OBJ)
 	$(CC) -o $@ $^ $(LIBS)
+
+clean:
+	rm -f $(OBJ) game_of_life
