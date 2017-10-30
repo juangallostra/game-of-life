@@ -21,6 +21,10 @@ int neighbours[8][2] = {{-1,-1},
 
 
 // Function definition
+int compare(const void* a, const void* b)
+{
+    return *(unsigned short *)a - *(unsigned short *)b;
+}
 
 int is_alive(int cont, int cell_state)
 {
@@ -44,6 +48,7 @@ unsigned short *add_to_array(unsigned short *pointer, unsigned short cell, int c
 	memcpy(new_array, pointer, (count+1)*sizeof(*pointer));
 	free(pointer);
 	*(new_array + count) = cell;
+	qsort(new_array, count + 1, sizeof(*new_array), &compare);
 	return new_array;
 }
 
@@ -59,17 +64,22 @@ int find_in_array(unsigned short *state, int cell, int terminator)
 		{
 			return 1;
 		}
+		else if (*(state+index) > cell)	
+		{
+			return 0;
+		}
 		index++;
 	}
 	return 0;
 }
 
-tuple *evolve(unsigned short * state , int row, int col, unsigned short terminator)
+tuple *evolve(unsigned short * state, int length, int row, int col, unsigned short terminator)
 {
 	// pointer will store the evolved state of the system
 	unsigned short *pointer;
 	int alive_cells_count = 0;
 	tuple *evolved = malloc(sizeof(tuple));
+	qsort(state, length, sizeof(*state), &compare);
 	// Loop for each cell of the map to know the state 
 	// of the cell and its neighboors
 	for (int i = 1; i < row - 1; i++)
@@ -94,14 +104,14 @@ tuple *evolve(unsigned short * state , int row, int col, unsigned short terminat
 					neighbour_count++;
 				}
 			}	
-			// The first time the memory allocation has to be initialized
-			if (!alive_cells_count)
-			{
-				pointer = malloc(sizeof(*pointer));
-			}
 			// check if the cell will be alive in the next state and, if so update array
 			if (is_alive(neighbour_count, curr_cell_state))
 			{	
+				// The first time the memory allocation has to be initialized
+				if (!alive_cells_count)
+				{
+					pointer = malloc(sizeof(*pointer));
+				}
 				// add cell to dynamic array
 				pointer = add_to_array(pointer, (i<<8) | j, alive_cells_count);
 				alive_cells_count++;
@@ -109,8 +119,13 @@ tuple *evolve(unsigned short * state , int row, int col, unsigned short terminat
 		}
 	}
 	// Add the terminator at the end of the array
-	*(pointer + alive_cells_count) = terminator;
 	// Return  a pointer to the first element of the memory block that allocates the state
+	if (!alive_cells_count)
+	{
+		pointer = malloc(sizeof(*pointer));
+
+	}
+	*(pointer + alive_cells_count) = terminator;
 	(*evolved).length = alive_cells_count + 1;
 	(*evolved).state = pointer;
 	return evolved;

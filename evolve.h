@@ -3,8 +3,8 @@
 
 // Coder: Gakusei
 
-#define ROW  200
-#define COLUMN  200
+#define ROW  250
+#define COLUMN  250
 #define TERMINATOR 65535
 
 typedef struct tuple {
@@ -12,6 +12,6 @@ typedef struct tuple {
 	unsigned short * state;
 } tuple;
 
-tuple *evolve(unsigned short * next_state , int row, int col, unsigned short terminator);
+tuple *evolve(unsigned short * next_state, int length, int row, int col, unsigned short terminator);
 
 #endif
