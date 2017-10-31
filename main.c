@@ -24,8 +24,8 @@ int main(void)
 	To encode a cell then: cell = (i << 8) | j.
 	To decode a cell: x = cell >> 8; y = cell & 255;
 	
-	An implementation with a lookup table for the cell states,
-	should be faster but theoretically not so memory efficient.
+	An implementation with a lookup table for the cell states
+	could be faster but theoretically not so memory efficient.
 	Since we wanted to experiment with memory allocation and
 	pointers wechose the dynamic array approach.
 
