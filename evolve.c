@@ -246,7 +246,7 @@ tuple *evolve(unsigned short * state, int length,
 		}
 		index++;
 	}
-
+	free(neigh_to_check);
 	if (!alive_cells_count)
 	{
 		next_state = malloc(sizeof(*state));
