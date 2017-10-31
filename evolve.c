@@ -56,8 +56,7 @@ int is_alive(int alive_neighbours, int cell_state)
 
 unsigned short *add_to_array(unsigned short *first_array_element,
 							 unsigned short cell,
-							 int last_position, 
-							 unsigned short terminator)
+							 int last_position)
 {
 	/*
 	This function is used to implement a dynamic array functionality.
@@ -78,8 +77,7 @@ unsigned short *add_to_array(unsigned short *first_array_element,
 	memcpy(new_array, first_array_element, (last_position + 1)*sizeof(*first_array_element));
 	free(first_array_element);
 	*(new_array + last_position) = cell;
-	*(new_array + last_position + 1) = terminator;
-	qsort(new_array, last_position + 2, sizeof(*new_array), &compare);
+	qsort(new_array, last_position + 1, sizeof(*new_array), &compare);
 	return new_array;
 }
 
@@ -126,7 +124,6 @@ tuple *evolve(unsigned short * state, int length,
 	*/
 	unsigned short *next_state;
 	int alive_cells_count = 0;
-	int curr_cell_state;
 	unsigned short neighbour;
 	int neighbour_count;
 	unsigned short *neigh_to_check;
@@ -158,17 +155,18 @@ tuple *evolve(unsigned short * state, int length,
 			{
 				if(!neigh_to_check_count)
 				{
-					neigh_to_check = malloc(2*sizeof(*state));
-					*neigh_to_check = neighbour;
-					*(neigh_to_check + 1) = terminator;
+					neigh_to_check = malloc(sizeof(*state));
+					add_to_array(neigh_to_check, neighbour, neigh_to_check_count);
+					neigh_to_check_count++;
 				}
 				else
 				{
 					if(!find_in_array(neigh_to_check, neighbour))
-						add_to_array(neigh_to_check, neighbour, neigh_to_check_count, terminator);
+					{
+						add_to_array(neigh_to_check, neighbour, neigh_to_check_count);
+						neigh_to_check_count++;
+					}
 				}
-				neigh_to_check_count++;
-
 			}
 		}	
 		// check if the cell will be alive in the next state and, if so update array
@@ -182,11 +180,12 @@ tuple *evolve(unsigned short * state, int length,
 				next_state = malloc(sizeof(*next_state));
 			}
 			// add cell to dynamic array and update count
-			next_state = add_to_array(next_state, cell, alive_cells_count, terminator);
+			next_state = add_to_array(next_state, cell, alive_cells_count);
 			alive_cells_count++;
 		}
 		index++;
 	}
+	*(neigh_to_check + neigh_to_check_count) = terminator;
 	index = 0;
 	while(*(neigh_to_check + index) != terminator)
 	{
@@ -213,7 +212,7 @@ tuple *evolve(unsigned short * state, int length,
 				next_state = malloc(sizeof(*next_state));
 			}
 			// add cell to dynamic array and update count
-			next_state = add_to_array(next_state, cell, alive_cells_count, terminator);
+			next_state = add_to_array(next_state, cell, alive_cells_count);
 			alive_cells_count++;
 		}
 		index++;
@@ -223,8 +222,8 @@ tuple *evolve(unsigned short * state, int length,
 	if (!alive_cells_count)
 	{
 		next_state = malloc(sizeof(*next_state));
-		*(next_state + alive_cells_count) = terminator;
 	}
+	*(next_state + alive_cells_count) = terminator;
 	(*evolved).length = alive_cells_count + 1;
 	(*evolved).state = next_state;
 	return evolved;
