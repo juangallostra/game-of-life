@@ -71,9 +71,9 @@ unsigned short *add_to_array(unsigned short *first_array_element,
 	previously used memory block. Then it orders all the elements
 	and returns the address of the first element of the updated array.
 	*/
-	unsigned short *new_array = malloc((last_position + 2)*sizeof(*first_array_element));
+	unsigned short *new_array = malloc((last_position + 1)*sizeof(*first_array_element));
 	// Since array indexes start at 0 and last_position is
-	// the last index -> lenght to copy = last_position + 1  
+	// the last index -> lenght to copy = last_position + 1
 	memcpy(new_array, first_array_element, (last_position + 1)*sizeof(*first_array_element));
 	free(first_array_element);
 	*(new_array + last_position) = cell;
@@ -109,7 +109,6 @@ int find_in_array(unsigned short *state, int cell)
 }
 
 tuple *evolve(unsigned short * state, int length,
- 			  int row, int col,
  			  unsigned short terminator)
 {
 	/*
@@ -156,18 +155,15 @@ tuple *evolve(unsigned short * state, int length,
 				if(!neigh_to_check_count)
 				{
 					neigh_to_check = malloc(sizeof(*state));
-					add_to_array(neigh_to_check, neighbour, neigh_to_check_count);
+					neigh_to_check = add_to_array(neigh_to_check, neighbour, neigh_to_check_count);
 					neigh_to_check_count++;
-					*(neigh_to_check + neigh_to_check_count) = terminator;
+					neigh_to_check = add_to_array(neigh_to_check, terminator, neigh_to_check_count);
 				}
-				else
+				if(!find_in_array(neigh_to_check, neighbour))
 				{
-					if(!find_in_array(neigh_to_check, neighbour))
-					{
-						add_to_array(neigh_to_check, neighbour, neigh_to_check_count);
-						neigh_to_check_count++;
-						*(neigh_to_check + neigh_to_check_count) = terminator;
-					}
+					neigh_to_check = add_to_array(neigh_to_check, neighbour, neigh_to_check_count);
+					neigh_to_check_count++;
+					neigh_to_check = add_to_array(neigh_to_check, terminator, neigh_to_check_count);
 				}
 			}
 		}	
@@ -179,7 +175,7 @@ tuple *evolve(unsigned short * state, int length,
 			// has to be initialized
 			if (!alive_cells_count)
 			{
-				next_state = malloc(sizeof(*next_state));
+				next_state = malloc(sizeof(*state));
 			}
 			// add cell to dynamic array and update count
 			next_state = add_to_array(next_state, cell, alive_cells_count);
@@ -188,7 +184,11 @@ tuple *evolve(unsigned short * state, int length,
 		index++;
 	}
 
-	
+	if (!neigh_to_check_count)
+	{
+		neigh_to_check = malloc(sizeof(*state));
+		neigh_to_check = add_to_array(neigh_to_check, terminator, neigh_to_check_count);
+	}
 	index = 0;
 	while(*(neigh_to_check + index) != terminator)
 	{
@@ -212,21 +212,22 @@ tuple *evolve(unsigned short * state, int length,
 			// has to be initialized
 			if (!alive_cells_count)
 			{
-				next_state = malloc(sizeof(*next_state));
+				next_state = malloc(sizeof(*state));
 			}
 			// add cell to dynamic array and update count
 			next_state = add_to_array(next_state, cell, alive_cells_count);
 			alive_cells_count++;
 		}
 		index++;
-
 	}
+
+
 	// Return  a pointer to the first element of the memory block that allocates the state
 	if (!alive_cells_count)
 	{
-		next_state = malloc(sizeof(*next_state));
+		next_state = malloc(sizeof(*state));
 	}
-	*(next_state + alive_cells_count) = terminator;
+	next_state = add_to_array(next_state, terminator, alive_cells_count);
 	(*evolved).length = alive_cells_count + 1;
 	(*evolved).state = next_state;
 	return evolved;

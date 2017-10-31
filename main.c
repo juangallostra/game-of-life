@@ -104,7 +104,7 @@ int main(void)
 		   its computation
 		*/
 		draw(current_state, TERMINATOR);
-		next_state = evolve(current_state, length, ROW, COLUMN, TERMINATOR);
+		next_state = evolve(current_state, length, TERMINATOR);
 		free(current_state);
 		current_state = malloc((*next_state).length*sizeof(*current_state));
 		memcpy(current_state, (*next_state).state, (*next_state).length*sizeof(*current_state));

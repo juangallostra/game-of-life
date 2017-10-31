@@ -19,6 +19,6 @@ typedef struct tuple {
 	unsigned short * state;
 } tuple;
 
-tuple *evolve(unsigned short * next_state, int length, int row, int col, unsigned short terminator);
+tuple *evolve(unsigned short * next_state, int length, unsigned short terminator);
 
 #endif
