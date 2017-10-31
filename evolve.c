@@ -119,10 +119,11 @@ tuple *evolve(unsigned short * state, int length,
 	and the value of the terminator that marks the end of the
 	array this functions computes and returns the next state.
 
-	To do so the function focuses only in interest cells 
-	(cells that are alive or cells that are next to a cell that
-	is alive) and processes them with two loops. First of all, it 
-	iterates over the cells that are alive in the current 
+	To do so the function focuses only on interest cells 
+	(cells that are alive and cells that may become alive,
+	which are the ones next to a cell that is alive) and 
+	processes them in two loops. The first loop iterates
+	over the cells that are alive in the current 
 	state and checks if they will be alive in the next state.
 	While doing so it adds the dead neighbours (the ones that are
 	alive will be also processed in this first loop) of the alive
@@ -130,7 +131,7 @@ tuple *evolve(unsigned short * state, int length,
 	become alive. After finishing this loop the second loop
 	processes the just created array of dead neighbours,
 	checks if any of them will be alive in the next state and if
-	so, adds them to the next state array.
+	so, adds them as alive cells to the next state array.
 
 	It returns a struct that holds a pointer to first
 	position of the array that stores the evolved state and the
@@ -207,7 +208,8 @@ tuple *evolve(unsigned short * state, int length,
 		}
 		index++;
 	}
-
+	// If no dead cells that may become alive are found create an empty
+	// array (only with the terminator)
 	if (!neigh_to_check_count)
 	{
 		neigh_to_check = malloc(sizeof(*state));
@@ -249,6 +251,8 @@ tuple *evolve(unsigned short * state, int length,
 		index++;
 	}
 	free(neigh_to_check);
+	// If there are no alive cells in the next state
+	//  create an empty array (only with the terminator)
 	if (!alive_cells_count)
 	{
 		next_state = malloc(sizeof(*state));
