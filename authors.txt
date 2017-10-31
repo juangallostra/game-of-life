@@ -1,0 +1,5 @@
+AUTHORS:
+========
+- #define true rand()&1: Juan Gallostra
+- Gakusei: Victor Centellas
+- MadMax: Ricardo Nieto
