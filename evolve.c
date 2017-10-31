@@ -25,7 +25,7 @@ int neighbours[8][2] = {{-1,-1},
 int compare(const void* a, const void* b)
 {
 	/*
-	Given to values, return if the first value is greater, equal or lower
+	Given two values, return if the first value is greater, equal or lower
 	than the second number by returning respectively a number lower, equal
 	or greater than 0
 	*/
@@ -119,7 +119,9 @@ tuple *evolve(unsigned short * state, int length,
 	and the value of the terminator that marks the end of the
 	array this functions computes and returns the next state.
 
-	To do so the function has to loops. First of all, it 
+	To do so the function focuses only in interest cells 
+	(cells that are alive or cells that are next to a cell that
+	is alive) and processes them with two loops. First of all, it 
 	iterates over the cells that are alive in the current 
 	state and checks if they will be alive in the next state.
 	While doing so it adds the dead neighbours (the ones that are
