@@ -158,6 +158,7 @@ tuple *evolve(unsigned short * state, int length,
 					neigh_to_check = malloc(sizeof(*state));
 					add_to_array(neigh_to_check, neighbour, neigh_to_check_count);
 					neigh_to_check_count++;
+					*(neigh_to_check + neigh_to_check_count) = terminator;
 				}
 				else
 				{
@@ -165,6 +166,7 @@ tuple *evolve(unsigned short * state, int length,
 					{
 						add_to_array(neigh_to_check, neighbour, neigh_to_check_count);
 						neigh_to_check_count++;
+						*(neigh_to_check + neigh_to_check_count) = terminator;
 					}
 				}
 			}
@@ -185,7 +187,8 @@ tuple *evolve(unsigned short * state, int length,
 		}
 		index++;
 	}
-	*(neigh_to_check + neigh_to_check_count) = terminator;
+
+	
 	index = 0;
 	while(*(neigh_to_check + index) != terminator)
 	{
