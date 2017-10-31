@@ -17,7 +17,6 @@ int neighbours[8][2] = {{-1,-1},
                         {1,  0},
                         {1,  1}};
 
-
 // Function definitions
 
 int compare(const void* a, const void* b)
@@ -57,7 +56,8 @@ int is_alive(int alive_neighbours, int cell_state)
 
 unsigned short *add_to_array(unsigned short *first_array_element,
 							 unsigned short cell,
-							 int last_position)
+							 int last_position, 
+							 unsigned short terminator)
 {
 	/*
 	This function is used to implement a dynamic array functionality.
@@ -69,9 +69,8 @@ unsigned short *add_to_array(unsigned short *first_array_element,
 	size for storing the actual elements, the new element and the terminator.
 	Hence the +2 in the first malloc call. Then it copies the current
 	contents of the array to this new block and frees the memory of the
-	previously used memory block. Then it orders all but the last element
-	(where the terminator will be placed) and returns the address of the
-	first element of the updated array.
+	previously used memory block. Then it orders all the elements
+	and returns the address of the first element of the updated array.
 	*/
 	unsigned short *new_array = malloc((last_position + 2)*sizeof(*first_array_element));
 	// Since array indexes start at 0 and last_position is
@@ -79,7 +78,8 @@ unsigned short *add_to_array(unsigned short *first_array_element,
 	memcpy(new_array, first_array_element, (last_position + 1)*sizeof(*first_array_element));
 	free(first_array_element);
 	*(new_array + last_position) = cell;
-	qsort(new_array, last_position + 1, sizeof(*new_array), &compare);
+	*(new_array + last_position + 1) = terminator;
+	qsort(new_array, last_position + 2, sizeof(*new_array), &compare);
 	return new_array;
 }
 
@@ -129,6 +129,8 @@ tuple *evolve(unsigned short * state, int length,
 	int curr_cell_state;
 	unsigned short neighbour;
 	int neighbour_count;
+	unsigned short *neigh_to_check;
+	int neigh_to_check_count = 0;
 	tuple *evolved = malloc(sizeof(tuple));
 	// Since auxiliary functions assume the current state
 	// array is sorted we sort it to be sure of it
@@ -136,48 +138,93 @@ tuple *evolve(unsigned short * state, int length,
 	// Loop for each cell of the map retrieving its actual
 	// state and the state of its neighbours to decide if
 	// it will be alive on the next iteration
-	for (int i = 1; i < row - 1; i++)
+	int index = 0; 
+	while (*(state+index) != terminator)
 	{
-		for (int j = 1; j < col - 1; j++)
+		unsigned short cell = *(state+index); // cell value in array
+		int i = cell >> 8;
+		int j = cell & 255;
+		// Check if neighbours are present in alive cells array
+		// and keep count on how many of them are alive
+		neighbour_count = 0;
+		for (int k = 0; k < 8; k++)
 		{
-			unsigned short cell = (i << 8) | j; // cell value in array if alive
-			// see if the current cell is found alive
-			curr_cell_state = find_in_array(state, cell);
-			// Check if neighbours are present in alive cells array
-			// and keep count on how many of them are alive
-			neighbour_count = 0;
-			for (int k = 0; k < 8; k++)
+			neighbour = ((i + neighbours[k][0])<<8) | (j + neighbours[k][1]);
+			if(find_in_array(state, neighbour))
 			{
-				neighbour = ((i + neighbours[k][0])<<8) | (j + neighbours[k][1]);
-				if(find_in_array(state, neighbour))
-				{
-					neighbour_count++;
-				}
-			}	
-			// check if the cell will be alive in the next state and, if so update array
-			// and add the current cell
-			if (is_alive(neighbour_count, curr_cell_state))
-			{	
-				// The first time the array for the next state
-				// has to be initialized
-				if (!alive_cells_count)
-				{
-					next_state = malloc(sizeof(*next_state));
-				}
-				// add cell to dynamic array and update count
-				next_state = add_to_array(next_state, (i<<8) | j, alive_cells_count);
-				alive_cells_count++;
+				neighbour_count++;
 			}
+			else
+			{
+				if(!neigh_to_check_count)
+				{
+					neigh_to_check = malloc(2*sizeof(*state));
+					*neigh_to_check = neighbour;
+					*(neigh_to_check + 1) = terminator;
+				}
+				else
+				{
+					if(!find_in_array(neigh_to_check, neighbour))
+						add_to_array(neigh_to_check, neighbour, neigh_to_check_count, terminator);
+				}
+				neigh_to_check_count++;
+
+			}
+		}	
+		// check if the cell will be alive in the next state and, if so update array
+		// and add the current cell
+		if (is_alive(neighbour_count, 1))
+		{	
+			// The first time the array for the next state
+			// has to be initialized
+			if (!alive_cells_count)
+			{
+				next_state = malloc(sizeof(*next_state));
+			}
+			// add cell to dynamic array and update count
+			next_state = add_to_array(next_state, cell, alive_cells_count, terminator);
+			alive_cells_count++;
 		}
+		index++;
 	}
-	// Add the terminator at the end of the array to mark its end
+	index = 0;
+	while(*(neigh_to_check + index) != terminator)
+	{
+		unsigned short cell = *(neigh_to_check + index); // cell value in array
+		int i = cell >> 8;
+		int j = cell & 255;
+		neighbour_count = 0;
+		for (int k = 0; k < 8; k++)
+		{
+			neighbour = ((i + neighbours[k][0])<<8) | (j + neighbours[k][1]);
+			if(find_in_array(state, neighbour))
+			{
+				neighbour_count++;
+			}
+		}	
+		// check if the cell will be alive in the next state and, if so update array
+		// and add the current cell
+		if (is_alive(neighbour_count, 0))
+		{	
+			// The first time the array for the next state
+			// has to be initialized
+			if (!alive_cells_count)
+			{
+				next_state = malloc(sizeof(*next_state));
+			}
+			// add cell to dynamic array and update count
+			next_state = add_to_array(next_state, cell, alive_cells_count, terminator);
+			alive_cells_count++;
+		}
+		index++;
+
+	}
 	// Return  a pointer to the first element of the memory block that allocates the state
 	if (!alive_cells_count)
 	{
 		next_state = malloc(sizeof(*next_state));
-
+		*(next_state + alive_cells_count) = terminator;
 	}
-	*(next_state + alive_cells_count) = terminator;
 	(*evolved).length = alive_cells_count + 1;
 	(*evolved).state = next_state;
 	return evolved;
