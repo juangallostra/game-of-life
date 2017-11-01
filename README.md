@@ -11,7 +11,8 @@ If everything went ok you should see a message in the terminal asking to choose 
 * [Diehard](http://www.conwaylife.com/wiki/Diehard)
 * [Acorn](http://www.conwaylife.com/w/index.php?title=Acorn)
 
-If you want to know more about Conway's game of life I suggest visiting the [wiki](http://www.conwaylife.com/wiki/Main_Page) page and reading the [wikipedia](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) entry.
+If you want to know more about Conway's game of life I suggest visiting the [wiki](http://www.conwaylife.com/wiki/Main_Page) page, reading the [wikipedia](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) entry and [Standford's](http://web.stanford.edu/~cdebs/GameOfLife/)
+univeristy introduction.
 
 ## Requirements
 * ```ncurses```
