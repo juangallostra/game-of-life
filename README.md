@@ -4,7 +4,7 @@ To test it open a terminal and type:
 1. ```$ git clone https://github.com/juangallostra/game-of-life.git```
 2. Navigate to the folder where the repository has been cloned
 3. ```$ make```
-4. ```$ .\game-of-life```
+4. ```$ ./game-of-life```
 
 If everything went ok you should see a message in the terminal asking to choose a pattern from 1 to 3. Actually the supported patterns are:
 * [R-pentomino](http://www.conwaylife.com/wiki/R-pentomino)
