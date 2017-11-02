@@ -10,7 +10,7 @@ void draw(int *state, int rows, int cols)
 {
 	initscr();
 	noecho();
-	clear();
+	erase();
 	curs_set(FALSE);
 	for (int i = 1; i < rows - 1; i++)
 	{
@@ -18,7 +18,7 @@ void draw(int *state, int rows, int cols)
 		{
 			if (*(state+i*rows+j)==1)
 			{
-				mvprintw(i, j, "X");
+				mvaddch(i, j, ACS_CKBOARD);
 			}	
 		}
 	}
