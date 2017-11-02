@@ -23,3 +23,6 @@ The repository contains two main branches that have diverged too much to be merg
 * The branch ```state-storage-in-bits``` contains a more sofisticated approach that tries to be more memory efficient than the straightforward approach. This is the current state-of-the-art implementation in the repository. The readme on that branch contains more information about how it works.
 
 Up to now there is no support for letting the user specify the initial condition of the system but on future releases this will be one of the first things to be implemented.
+
+## Demo
+![Demo](/img/game-of-life.gif)
