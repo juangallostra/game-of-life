@@ -14,6 +14,9 @@ If everything went ok you should see a message in the terminal asking to choose 
 If you want to know more about Conway's game of life I suggest visiting the [wiki](http://www.conwaylife.com/wiki/Main_Page) page, reading the [wikipedia](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) entry and [Standford's](http://web.stanford.edu/~cdebs/GameOfLife/)
 univeristy introduction.
 
+## Demo
+![Demo](/img/game-of-life.gif)
+
 ## Requirements
 * ```ncurses```
 
@@ -23,6 +26,3 @@ The repository contains two main branches that have diverged too much to be merg
 * The branch ```state-storage-in-bits``` contains a more sofisticated approach that tries to be more memory efficient than the straightforward approach. This is the current state-of-the-art implementation in the repository. The readme on that branch contains more information about how it works.
 
 Up to now there is no support for letting the user specify the initial condition of the system but on future releases this will be one of the first things to be implemented.
-
-## Demo
-![Demo](/img/game-of-life.gif)
