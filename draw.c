@@ -24,5 +24,4 @@ void draw(int *state, int rows, int cols)
 	}
 	refresh();
 	usleep(70000);
-	endwin();
 }
