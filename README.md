@@ -23,6 +23,6 @@ univeristy introduction.
 ## About
 The repository contains two main branches that have diverged too much to be merged again and hence can be considered as two different implementations.
 * The branch ```master``` contains a straightforward approach where a matrix is used to store the current state of the system. At each iteration the full matrix is traversed and the system is evolved to its next state. 
-* The branch ```state-storage-in-bits``` contains a more sofisticated approach that tries to be more memory efficient than the straightforward approach. This is the current state-of-the-art implementation in the repository. The readme on that branch contains more information about how it works.
+* The branch ```state-storage-in-bits``` contains a more sophisticated approach that tries to be more memory efficient than the straightforward approach. This is the current state-of-the-art implementation in the repository. The readme on that branch contains more information about how it works.
 
 Up to now there is no support for letting the user specify the initial condition of the system but on future releases this will be one of the first things to be implemented.
