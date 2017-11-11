@@ -3,3 +3,7 @@ C implementation of conway's game of life for the subject of Embedded and real t
 
 ## Demo
 ![Demo](/img/game-of-life.gif)
+
+## Requirements
+* ```ncurses```
+
