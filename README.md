@@ -2,7 +2,7 @@
 C implementation of Conway's game of life for the subject of Embedded and Real time systems. The application runs on a terminal.
 To test it open a terminal and type:
 1. ```$ git clone https://github.com/juangallostra/game-of-life.git```
-2. Navigate to the folder where the repository has been cloned
+2. Navigate to the folder where the repository has been cloned and enter the ```src``` folder
 3. ```$ make```
 4. ```$ ./game-of-life```
 
