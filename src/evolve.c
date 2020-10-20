@@ -49,13 +49,13 @@ int *evolve(int * state , int row, int col)
 			int cont = 0;
 			for (int k = 0; k < 8; k++)
 			{
-				if (*(state + (i + neighbours[k][0])*row + j+ neighbours[k][1]) == 1)
+				if (*(state + (i + neighbours[k][0])*col + j+ neighbours[k][1]) == 1)
 				{
 					cont++;
 				} 
 			}
 			// Call to the de decision function and store the content into its corresponding adress
-			*(pointer + i*row + j) = decision(cont,*(state + i*row +j));
+			*(pointer + i*col + j) = decision(cont,*(state + i*col +j));
 		}
 	}
 
